@@ -18,7 +18,7 @@
 
     // Check if page is hidden (user switched to app)
     var timeout = setTimeout(function () {
-        if (document.visibilityState === 'visible' && Date.now() - start < 1600) {
+       if (document.visibilityState === 'visible' && Date.now() - start < 3000) {
             if (isIOS) {
                 window.location = iosAppStore;
             } else if (/android/i.test(userAgent)) {
@@ -27,7 +27,7 @@
                 window.location = androidWebStore;
             }
         }
-    }, 1500);
+    }, 2500);
 
     // If page becomes hidden (user opened app), cancel fallback
     document.addEventListener('visibilitychange', function() {
