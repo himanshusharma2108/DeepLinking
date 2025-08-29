@@ -5,41 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         function openAppOrStore() {
-    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    var appScheme = "miqube://open";
-    var iosAppStore = "https://apps.apple.com/app/id1257705763";
-    var androidMarketLink = "intent://details?id=com.indiqube.miqube#Intent;scheme=market;package=com.android.vending;end";
-    var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var appScheme = "miqube://open";
+            var iosAppStore = "https://apps.apple.com/app/id1257705763";
+            var androidMarketLink = "intent://details?id=com.indiqube.miqube#Intent;scheme=market;package=com.android.vending;end";
+            var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-    var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+            var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+            var isAndroid = /android/i.test(userAgent);
 
-    var start = Date.now();
-    window.location = appScheme;
+            // Open app
+            var start = Date.now();
+            window.location = appScheme;
 
-    // Check if page is hidden (user switched to app)
-    var timeout = setTimeout(function () {
-       if (document.visibilityState === 'visible' && Date.now() - start < 3000) {
-            if (isIOS) {
-                window.location = iosAppStore;
-            } else if (/android/i.test(userAgent)) {
-                window.location = androidMarketLink;
-            } else {
-                window.location = androidWebStore;
-            }
+            // Timeout to check if app opened
+            var timeout = setTimeout(function () {
+                if (document.visibilityState === 'visible' && Date.now() - start < 1500) {
+                    if (isIOS) {
+                        window.location = iosAppStore;
+                    } else if (isAndroid) {
+                        window.location = androidMarketLink;
+                    } else {
+                        window.location = androidWebStore;
+                    }
+                }
+            }, 1400);
+
+            // Cancel fallback if page becomes hidden (app opened)
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'hidden') {
+                    clearTimeout(timeout);
+                }
+            });
         }
-    }, 2500);
-
-    // If page becomes hidden (user opened app), cancel fallback
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'hidden') {
-            clearTimeout(timeout);
-        }
-    });
-}
-
     </script>
 </head>
-<body onload="openAppOrStore()">
-    <p>Opening the app... If it doesn't open, you'll be redirected to the store.</p>
+<body>
+    <p>Tap the button to open the app:</p>
+    <button onclick="openAppOrStore()">Open App</button>
 </body>
 </html>
