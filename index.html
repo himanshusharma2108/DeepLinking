@@ -1,8 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Open App or Store</title>
+    <title>Open Miqube App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 40px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>
     <script>
         function openAppOrStore() {
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -14,11 +37,9 @@
             var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
             var isAndroid = /android/i.test(userAgent);
 
-            // Open app
             var start = Date.now();
             window.location = appScheme;
 
-            // Timeout to check if app opened
             var timeout = setTimeout(function () {
                 if (document.visibilityState === 'visible' && Date.now() - start < 1500) {
                     if (isIOS) {
@@ -31,7 +52,6 @@
                 }
             }, 1400);
 
-            // Cancel fallback if page becomes hidden (app opened)
             document.addEventListener('visibilitychange', function() {
                 if (document.visibilityState === 'hidden') {
                     clearTimeout(timeout);
@@ -41,7 +61,7 @@
     </script>
 </head>
 <body>
-    <p>Tap the button to open the app:</p>
+    <p>Tap below to open the Miqube app.</p>
     <button onclick="openAppOrStore()">Open App</button>
 </body>
 </html>
