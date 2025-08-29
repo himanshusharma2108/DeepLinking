@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Open Miqube App</title>
+  <script>
+    window.onload = function () {
+      var start = Date.now();
+      // Try to open the app (custom deep link)
+      window.location = "miqube://event";
+      // If app not installed, go to Play Store after 1.5 seconds
+      setTimeout(function () {
+        if (Date.now() - start < 2000) {
+          window.location = "market://details?id=com.indiqube.miqube";
+        }
+      }, 1500);
+    };
+  </script>
+</head>
+<body>
+  <p>Opening Miqube Please Wait eventtttt</p>
+</body>
+</html>
