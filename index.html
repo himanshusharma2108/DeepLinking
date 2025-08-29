@@ -5,40 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         function openAppOrStore() {
-            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            var now = Date.now();
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    var appScheme = "miqube://open";
+    var iosAppStore = "https://apps.apple.com/app/id1257705763";
+    var androidMarketLink = "intent://details?id=com.indiqube.miqube#Intent;scheme=market;package=com.android.vending;end";
+    var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-            // Change to your real deep link scheme
-            var appScheme = "miqube://app//events?id='1234'";
+    var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
 
-            // Android Play Store link
-            var androidMarketLink = "intent://details?id=com.indiqube.miqube#Intent;scheme=market;package=com.android.vending;end";
-            var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+    var start = Date.now();
+    window.location = appScheme;
 
-            // iOS App Store link
-            var iosAppStore = "https://apps.apple.com/app/id1257705763"; // Replace with real ID
-/* 
-            // Try opening the app using iframe
-      var iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
-             */
-window.location = appScheme;
-            // Fallback after 1 second
-            setTimeout(function () {
-                if (/android/i.test(userAgent)) {
-                    // Android
-                    window.location = androidMarketLink;
-                } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                    // iOS
-                    window.location = iosAppStore;
-                } else {
-                    // Other devices → open web Play Store
-                    window.location = androidWebStore;
-                }
-            }, 1500);
+    // Check if page is hidden (user switched to app)
+    var timeout = setTimeout(function () {
+        if (document.visibilityState === 'visible' && Date.now() - start < 1600) {
+            if (isIOS) {
+                window.location = iosAppStore;
+            } else if (/android/i.test(userAgent)) {
+                window.location = androidMarketLink;
+            } else {
+                window.location = androidWebStore;
+            }
         }
+    }, 1500);
+
+    // If page becomes hidden (user opened app), cancel fallback
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') {
+            clearTimeout(timeout);
+        }
+    });
+}
+
     </script>
 </head>
 <body onload="openAppOrStore()">
