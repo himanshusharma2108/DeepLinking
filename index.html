@@ -4,40 +4,30 @@
     <title>Open App or Store</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        function openAppOrStore() {
-            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            var now = Date.now();
+       function openAppOrStore() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      var appScheme = "miqube://open";
+      var iosAppStore = "https://apps.apple.com/app/id1257705763";
+      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-            // Change to your real deep link scheme
-            var appScheme = "miqube://app//events?id='1234'";
-
-            // Android Play Store link
-            var androidMarketLink = "intent://details?id=com.indiqube.miqube#Intent;scheme=market;package=com.android.vending;end";
-            var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
-
-            // iOS App Store link
-            var iosAppStore = "https://apps.apple.com/app/id1257705763"; // Replace with real ID
-             var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
       var isAndroid = /android/i.test(userAgent);
-/* 
-            // Try opening the app using iframe
-      var iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
-             */
-             // Cancel fallback if app opened (page goes hidden or unloaded)
-            var fallbackTriggered = false;
+
+      var fallbackTriggered = false;
+
+      // Cancel fallback if app opened (page goes hidden or unloaded)
       function cancelFallback() {
         fallbackTriggered = true;
       }
-            document.addEventListener("visibilitychange", cancelFallback);
+      document.addEventListener("visibilitychange", cancelFallback);
       window.addEventListener("pagehide", cancelFallback);
       window.addEventListener("blur", cancelFallback); // extra safety
-            
-window.location = appScheme;
-            // Fallback after 1 second
-            setTimeout(function () {
+
+      // Try opening the app
+      window.location = appScheme;
+
+      // Fallback only if app didn’t open
+      setTimeout(function () {
         if (!fallbackTriggered) {
           if (isIOS) {
             window.location = iosAppStore;
