@@ -38,18 +38,18 @@
 
       var fallbackTriggered = false;
 
-      // Cancel fallback if the page becomes hidden (means app opened)
-      function clearFallback() {
+      // Cancel fallback if app opened (page goes hidden or unloaded)
+      function cancelFallback() {
         fallbackTriggered = true;
       }
+      document.addEventListener("visibilitychange", cancelFallback);
+      window.addEventListener("pagehide", cancelFallback);
+      window.addEventListener("blur", cancelFallback); // extra safety
 
-      document.addEventListener("visibilitychange", clearFallback);
-      window.addEventListener("pagehide", clearFallback);
-
-      // Try to open the app
+      // Try opening the app
       window.location = appScheme;
 
-      // Fallback after 1.5s
+      // Fallback only if app didn’t open
       setTimeout(function () {
         if (!fallbackTriggered) {
           if (isIOS) {
