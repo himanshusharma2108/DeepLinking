@@ -1,69 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open Miqube App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 40px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button: hover {
-      background-color: #0056b3;
-    }
-    p {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-  </style>
-  <script>
-    function openAppOrStore() {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      var appScheme = "miqube://open";
-      var iosAppStore = "https://apps.apple.com/app/id1257705763";
-      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+    <title>Open App or Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        function openAppOrStore() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var appScheme = "miqube://open";
+            var iosAppStore = "https://apps.apple.com/app/id1257705763";
+            var androidMarketLink = "intent://details?id=com.indiqube.miqube#Intent;scheme=market;package=com.android.vending;end";
+            var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-      var isAndroid = /android/i.test(userAgent);
+            var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+            var isAndroid = /android/i.test(userAgent);
 
-      var fallbackTriggered = false;
+            // Open app
+            var start = Date.now();
+            window.location = appScheme;
 
-      // Cancel fallback if app opened (page goes hidden or unloaded)
-      function cancelFallback() {
-        fallbackTriggered = true;
-      }
-      document.addEventListener("visibilitychange", cancelFallback);
-      window.addEventListener("pagehide", cancelFallback);
-      window.addEventListener("blur", cancelFallback); // extra safety
+            // Timeout to check if app opened
+            var timeout = setTimeout(function () {
+                if (document.visibilityState === 'visible' && Date.now() - start < 1500) {
+                    if (isIOS) {
+                        window.location = iosAppStore;
+                    } else if (isAndroid) {
+                        window.location = androidMarketLink;
+                    } else {
+                        window.location = androidWebStore;
+                    }
+                }
+            }, 1400);
 
-      // Try opening the app
-      window.location = appScheme;
-
-      // Fallback only if the app didn’t open
-      setTimeout(function () {
-        if (!fallbackTriggered) {
-          if (isIOS) {
-            window.location = iosAppStore;
-          } else if (isAndroid) {
-            window.location = androidWebStore;
-          }
+            // Cancel fallback if page becomes hidden (app opened)
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'hidden') {
+                    clearTimeout(timeout);
+                }
+            });
         }
-      }, 1500);
-    }
-  </script>
+    </script>
 </head>
 <body>
-    <p>Tap below to open the Miqube app.</p>
+    <p>Tap the button to open the app:</p>
     <button onclick="openAppOrStore()">Open App</button>
 </body>
 </html>
