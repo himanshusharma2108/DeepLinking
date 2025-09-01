@@ -38,25 +38,19 @@
 
       var fallbackTriggered = false;
 
-      // Cancel fallback when app actually opens
+      // Cancel fallback if app opened (page goes hidden or unloaded)
       function cancelFallback() {
         fallbackTriggered = true;
       }
+      document.addEventListener("visibilitychange", cancelFallback);
       window.addEventListener("pagehide", cancelFallback);
-      window.addEventListener("blur", cancelFallback);
-      document.addEventListener("visibilitychange", function() {
-        if (document.hidden) cancelFallback();
-      });
+      window.addEventListener("blur", cancelFallback); // extra safety
 
-      // Create hidden iframe (avoids iOS "invalid address" error)
-      var iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
+      // Try opening the app
+      window.location = appScheme;
 
-      // Fallback after 2s if app didn’t open
+      // Fallback only if app didn’t open
       setTimeout(function () {
-        iframe.remove();
         if (!fallbackTriggered) {
           if (isIOS) {
             window.location = iosAppStore;
@@ -64,7 +58,7 @@
             window.location = androidWebStore;
           }
         }
-      }, 2000);
+      }, 1500);
     }
   </script>
 </head>
@@ -72,3 +66,4 @@
   <p>Tap below to open the Miqube app.</p>
   <button onclick="openAppOrStore()">Open App</button>
 </body>
+</html>
