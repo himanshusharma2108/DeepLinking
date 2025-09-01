@@ -29,6 +29,10 @@
       function cancelFallback() {
         fallbackTriggered = true;
       }
+            document.addEventListener("visibilitychange", cancelFallback);
+      window.addEventListener("pagehide", cancelFallback);
+      window.addEventListener("blur", cancelFallback); // extra safety
+            
 window.location = appScheme;
             // Fallback after 1 second
             setTimeout(function () {
