@@ -4,61 +4,45 @@
   <title>Open Miqube App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 40px;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
     button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
+      background-color: #007bff; color: white; border: none;
+      padding: 12px 24px; font-size: 18px; border-radius: 8px; cursor: pointer;
     }
-    button:hover {
-      background-color: #0056b3;
-    }
-    p {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
+    button:hover { background-color: #0056b3; }
+    p { font-size: 16px; margin-bottom: 20px; }
   </style>
- <script>
-  function openAppOrStore() {
-    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    var appScheme = "miqube://open";
-    var iosAppStore = "https://apps.apple.com/app/id1257705763";
-    var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+  <script>
+    function openAppOrStore() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      var appScheme = "miqube://open";
+      var iosAppStore = "https://apps.apple.com/app/id1257705763";
+      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-    var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-    var isAndroid = /android/i.test(userAgent);
-    var fallbackTriggered = false;
+      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      var isAndroid = /android/i.test(userAgent);
+      var fallbackTriggered = false;
 
-    function cancelFallback() { fallbackTriggered = true; }
-    window.addEventListener("pagehide", cancelFallback);
-    window.addEventListener("blur", cancelFallback);
-    document.addEventListener("visibilitychange", function() {
-      if (document.hidden) cancelFallback();
-    });
+      function cancelFallback() { fallbackTriggered = true; }
+      window.addEventListener("pagehide", cancelFallback);
+      window.addEventListener("blur", cancelFallback);
+      document.addEventListener("visibilitychange", () => { if (document.hidden) cancelFallback(); });
 
-    // Direct open first (works since scheme is valid)
-    window.location = appScheme;
+      // Try to open app directly
+      window.location = appScheme;
 
-    // Fallback to store after delay
-    setTimeout(function () {
-      if (!fallbackTriggered) {
-        if (isIOS) {
-          window.location = iosAppStore;
-        } else if (isAndroid) {
-          window.location = androidWebStore;
+      // Fallback after 3 seconds if app didn't open
+      setTimeout(function () {
+        if (!fallbackTriggered) {
+          if (isIOS) {
+            window.location = iosAppStore;
+          } else if (isAndroid) {
+            window.location = androidWebStore;
+          }
         }
-      }
-    }, 3000);
-  }
-</script>
+      }, 3000);
+    }
+  </script>
 </head>
 <body>
   <p>Tap below to open the Miqube app.</p>
