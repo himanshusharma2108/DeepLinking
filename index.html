@@ -1,74 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open Miqube App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 40px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    p {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-  </style>
-  <script>
-    function openAppOrStore() {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      var appScheme = "miqube://open";
-      var iosAppStore = "https://apps.apple.com/app/id1257705763";
-      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+    <title>Open App or Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        function openAppOrStore() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var now = Date.now();
 
-      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-      var isAndroid = /android/i.test(userAgent);
+            // Change to your real deep link scheme
+            var appScheme = "miqube://app//events?id='1234'";
 
-      var fallbackTriggered = false;
+            // Android Play Store link
+            var androidMarketLink = "intent://details?id=com.indiqube.miqube#Intent;scheme=market;package=com.android.vending;end";
+            var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-      // Cancel fallback if app opened (page goes hidden or unloaded)
-      function cancelFallback() {
-        fallbackTriggered = true;
-      }
-       window.addEventListener("pagehide", cancelFallback);
-      window.addEventListener("blur", cancelFallback);
-      document.addEventListener("visibilitychange", function() {
-        if (document.hidden) cancelFallback();
-      }); // extra safety
-
-      // Try opening the app
-       var iframe = document.createElement("iframe");
+            // iOS App Store link
+            var iosAppStore = "https://apps.apple.com/app/id1257705763"; // Replace with real ID
+/* 
+            // Try opening the app using iframe
+      var iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.src = appScheme;
       document.body.appendChild(iframe);
-
-      setTimeout(function () {
-        iframe.remove();
-        if (!fallbackTriggered) {
-          if (isIOS) {
-            window.location = iosAppStore;
-          } else if (isAndroid) {
-            window.location = androidWebStore;
-          }
+             */
+window.location = appScheme;
+            // Fallback after 1 second
+            setTimeout(function () {
+                if (/android/i.test(userAgent)) {
+                    // Android
+                    window.location = androidMarketLink;
+                } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                    // iOS
+                    window.location = iosAppStore;
+                } else {
+                    // Other devices → open web Play Store
+                    window.location = androidWebStore;
+                }
+            }, 1500);
         }
-      }, 2000);
-    }
-  </script>
+    </script>
 </head>
-<body>
-  <p>Tap below to open the Miqube app.</p>
-  <button onclick="openAppOrStore()">Open Appication</button>
+<body onload="openAppOrStore()">
+    <p>Opening the app... If it doesn't open, you'll be redirected to the store.</p>
 </body>
 </html>
