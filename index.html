@@ -35,7 +35,6 @@
 
       var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
       var isAndroid = /android/i.test(userAgent);
-
       var fallbackTriggered = false;
 
       function cancelFallback() {
@@ -43,17 +42,22 @@
       }
       window.addEventListener("pagehide", cancelFallback);
       window.addEventListener("blur", cancelFallback);
-      document.addEventListener("visibilitychange", function() {
+      document.addEventListener("visibilitychange", function () {
         if (document.hidden) cancelFallback();
       });
 
-      var iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
+      window.location = appScheme;
 
       setTimeout(function () {
-        iframe.remove();
+        if (!fallbackTriggered) {
+          var iframe = document.createElement("iframe");
+          iframe.style.display = "none";
+          iframe.src = appScheme;
+          document.body.appendChild(iframe);
+        }
+      }, 100);
+
+      setTimeout(function () {
         if (!fallbackTriggered) {
           if (isIOS) {
             window.location = iosAppStore;
