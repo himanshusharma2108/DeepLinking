@@ -28,41 +28,38 @@
   </style>
   <script>
     function openAppOrStore() {
-  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  var appScheme = "miqube://open";
-  var iosAppStore = "https://apps.apple.com/app/id1257705763";
-  var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      var appScheme = "miqube://open";
+      var iosAppStore = "https://apps.apple.com/app/id1257705763";
+      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-  var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-  var isAndroid = /android/i.test(userAgent);
+      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      var isAndroid = /android/i.test(userAgent);
 
-  var fallbackTriggered = false;
+      var fallbackTriggered = false;
 
-  function cancelFallback() {
-    fallbackTriggered = true;
-  }
-  document.addEventListener("visibilitychange", cancelFallback);
-  window.addEventListener("pagehide", cancelFallback);
-  window.addEventListener("blur", cancelFallback);
-
-  // Create hidden iframe instead of window.location
-  var iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = appScheme;
-  document.body.appendChild(iframe);
-
-  setTimeout(function () {
-    if (!fallbackTriggered) {
-      if (isIOS) {
-        window.location = iosAppStore;
-      } else if (isAndroid) {
-        window.location = androidWebStore;
+      // Cancel fallback if app opened (page goes hidden or unloaded)
+      function cancelFallback() {
+        fallbackTriggered = true;
       }
-    }
-    iframe.remove();
-  }, 1500);
-}
+      document.addEventListener("visibilitychange", cancelFallback);
+      window.addEventListener("pagehide", cancelFallback);
+      window.addEventListener("blur", cancelFallback); // extra safety
 
+      // Try opening the app
+      window.location = appScheme;
+
+      // Fallback only if app didn’t open
+      setTimeout(function () {
+        if (!fallbackTriggered) {
+          if (isIOS) {
+            window.location = iosAppStore;
+          } else if (isAndroid) {
+            window.location = androidWebStore;
+          }
+        }
+      }, 1500);
+    }
   </script>
 </head>
 <body>
