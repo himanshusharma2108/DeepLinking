@@ -17,6 +17,8 @@
 
             // iOS App Store link
             var iosAppStore = "https://apps.apple.com/app/id1257705763"; // Replace with real ID
+             var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      var isAndroid = /android/i.test(userAgent);
 /* 
             // Try opening the app using iframe
       var iframe = document.createElement("iframe");
