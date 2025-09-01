@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Open App or Store</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-       function openAppOrStore() {
+  <title>Open Miqube App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+  </style>
+  <script>
+    function openAppOrStore() {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
       var appScheme = "miqube://open";
       var iosAppStore = "https://apps.apple.com/app/id1257705763";
@@ -37,9 +60,10 @@
         }
       }, 1500);
     }
-    </script>
+  </script>
 </head>
-<body onload="openAppOrStore()">
-    <p>Opening the app... If it doesn't open, you'll be redirected to the store.</p>
+<body>
+  <p>Tap below to open the Miqube app.</p>
+  <button onclick="openAppOrStore()">Open App</button>
 </body>
 </html>
