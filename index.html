@@ -47,10 +47,13 @@
       window.addEventListener("blur", cancelFallback); // extra safety
 
       // Try opening the app
-      window.location = appScheme;
+       var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appScheme;
+      document.body.appendChild(iframe);
 
-      // Fallback only if app didn’t open
       setTimeout(function () {
+        iframe.remove();
         if (!fallbackTriggered) {
           if (isIOS) {
             window.location = iosAppStore;
@@ -58,7 +61,7 @@
             window.location = androidWebStore;
           }
         }
-      }, 1500);
+      }, 2000);
     }
   </script>
 </head>
