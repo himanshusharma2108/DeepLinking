@@ -28,44 +28,45 @@
   </style>
   <script>
     function openAppOrStore() {
-  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  var appScheme = "miqube://open";
-  var iosAppStore = "https://apps.apple.com/app/id1257705763";
-  var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      var appScheme = "miqube://open";
+      var iosAppStore = "https://apps.apple.com/app/id1257705763";
+      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-  var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-  var isAndroid = /android/i.test(userAgent);
+      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      var isAndroid = /android/i.test(userAgent);
 
-  var fallbackTriggered = false;
+      var fallbackTriggered = false;
 
-  function cancelFallback() {
-    fallbackTriggered = true;
-  }
-  document.addEventListener("visibilitychange", cancelFallback);
-  window.addEventListener("pagehide", cancelFallback);
-  window.addEventListener("blur", cancelFallback);
-
-  var iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = appScheme;
-  document.body.appendChild(iframe);
-
-  setTimeout(function () {
-    if (!fallbackTriggered) {
-      if (isIOS) {
-        window.location = iosAppStore;
-      } else if (isAndroid) {
-        window.location = androidWebStore;
+      function cancelFallback() {
+        fallbackTriggered = true;
       }
-    }
-    iframe.remove();
-  }, 1500);
-}
+      window.addEventListener("pagehide", cancelFallback);
+      window.addEventListener("blur", cancelFallback);
+      document.addEventListener("visibilitychange", function() {
+        if (document.hidden) cancelFallback();
+      });
 
+      var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appScheme;
+      document.body.appendChild(iframe);
+
+      setTimeout(function () {
+        iframe.remove();
+        if (!fallbackTriggered) {
+          if (isIOS) {
+            window.location = iosAppStore;
+          } else if (isAndroid) {
+            window.location = androidWebStore;
+          }
+        }
+      }, 2000);
+    }
   </script>
 </head>
 <body>
-  <p>Tap below to open the Miqube app. </p>
+  <p>Tap below to open the Miqube app.</p>
   <button onclick="openAppOrStore()">Open App</button>
 </body>
 </html>
