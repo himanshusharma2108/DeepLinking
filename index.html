@@ -26,48 +26,47 @@
       margin-bottom: 20px;
     }
   </style>
-  <script>
-    function openAppOrStore() {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      var appScheme = "miqube://open";
-      var iosAppStore = "https://apps.apple.com/app/id1257705763";
-      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+ <script>
+  function openAppOrStore() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    var appScheme = "miqube://open";
+    var iosAppStore = "https://apps.apple.com/app/id1257705763";
+    var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-      var isAndroid = /android/i.test(userAgent);
-      var fallbackTriggered = false;
+    var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    var isAndroid = /android/i.test(userAgent);
+    var fallbackTriggered = false;
 
-      function cancelFallback() {
-        fallbackTriggered = true;
-      }
-      window.addEventListener("pagehide", cancelFallback);
-      window.addEventListener("blur", cancelFallback);
-      document.addEventListener("visibilitychange", function () {
-        if (document.hidden) cancelFallback();
-      });
-
-      window.location = appScheme;
-
-      setTimeout(function () {
-        if (!fallbackTriggered) {
-          var iframe = document.createElement("iframe");
-          iframe.style.display = "none";
-          iframe.src = appScheme;
-          document.body.appendChild(iframe);
-        }
-      }, 100);
-
-      setTimeout(function () {
-        if (!fallbackTriggered) {
-          if (isIOS) {
-            window.location = iosAppStore;
-          } else if (isAndroid) {
-            window.location = androidWebStore;
-          }
-        }
-      }, 2000);
+    function cancelFallback() {
+      fallbackTriggered = true;
     }
-  </script>
+    window.addEventListener("pagehide", cancelFallback);
+    window.addEventListener("blur", cancelFallback);
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) cancelFallback();
+    });
+
+    if (isIOS) {
+      var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appScheme;
+      document.body.appendChild(iframe);
+    } else {
+      window.location = appScheme;
+    }
+
+    setTimeout(function () {
+      if (!fallbackTriggered) {
+        if (isIOS) {
+          window.location = iosAppStore;
+        } else if (isAndroid) {
+          window.location = androidWebStore;
+        }
+      }
+    }, 2000);
+  }
+</script>
+
 </head>
 <body>
   <p>Tap below to open the Miqube app.</p>
