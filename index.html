@@ -24,21 +24,23 @@
       iframe.src = appScheme;
       document.body.appendChild(iframe);
              */
+             // Cancel fallback if app opened (page goes hidden or unloaded)
+            var fallbackTriggered = false;
+      function cancelFallback() {
+        fallbackTriggered = true;
+      }
 window.location = appScheme;
             // Fallback after 1 second
             setTimeout(function () {
-                if (/android/i.test(userAgent)) {
-                    // Android
-                    window.location = androidMarketLink;
-                } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                    // iOS
-                    window.location = iosAppStore;
-                } else {
-                    // Other devices → open web Play Store
-                    window.location = androidWebStore;
-                }
-            }, 1500);
+        if (!fallbackTriggered) {
+          if (isIOS) {
+            window.location = iosAppStore;
+          } else if (isAndroid) {
+            window.location = androidWebStore;
+          }
         }
+      }, 1500);
+    }
     </script>
 </head>
 <body onload="openAppOrStore()">
