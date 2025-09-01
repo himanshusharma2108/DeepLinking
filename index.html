@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-    button {
-      background-color: #007bff; color: white; border: none;
-      padding: 12px 24px; font-size: 18px; border-radius: 8px; cursor: pointer;
-    }
+    button { background-color: #007bff; color: white; border: none; padding: 12px 24px; font-size: 18px; border-radius: 8px; cursor: pointer; }
     button:hover { background-color: #0056b3; }
     p { font-size: 16px; margin-bottom: 20px; }
   </style>
@@ -18,29 +15,48 @@
       var appScheme = "miqube://open";
       var iosAppStore = "https://apps.apple.com/app/id1257705763";
       var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
-
       var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
       var isAndroid = /android/i.test(userAgent);
+
       var fallbackTriggered = false;
 
-      function cancelFallback() { fallbackTriggered = true; }
-      window.addEventListener("pagehide", cancelFallback);
-      window.addEventListener("blur", cancelFallback);
-      document.addEventListener("visibilitychange", () => { if (document.hidden) cancelFallback(); });
-
-      // Try to open app directly
-      window.location = appScheme;
-
-      // Fallback after 3 seconds if app didn't open
-      setTimeout(function () {
+      function fallback() {
         if (!fallbackTriggered) {
+          fallbackTriggered = true;
           if (isIOS) {
             window.location = iosAppStore;
           } else if (isAndroid) {
             window.location = androidWebStore;
           }
         }
-      }, 3000);
+      }
+      // If page loses visibility, cancel fallback (means app likely opened)
+      function cancelFallback() {
+        fallbackTriggered = true;
+      }
+      // Listen for visibility change (works for both platforms)
+      document.addEventListener("visibilitychange", function() {
+        if (document.hidden) cancelFallback();
+      });
+      window.addEventListener("pagehide", cancelFallback);
+      window.addEventListener("blur", cancelFallback);
+
+      if (isIOS) {
+        // iOS: Avoid iframes to prevent "invalid address" error
+        setTimeout(fallback, 2000); // Give UIWebView a chance to launch app
+        window.location = appScheme;
+      } else if (isAndroid) {
+        // Android: Try to open via top-level navigation, fallback after short wait
+        var now = Date.now();
+        setTimeout(function() {
+          // If not triggered, redirect (2s is usually good)
+          if (Date.now() - now < 2100) fallback();
+        }, 2000);
+        window.location = appScheme;
+      } else {
+        // Desktop (show a message, or fallback)
+        alert("Please open this page on your mobile device.");
+      }
     }
   </script>
 </head>
