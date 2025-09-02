@@ -46,18 +46,22 @@
   window.location = appScheme;
 
   setTimeout(function () {
-      // app never opened → go to store
+       if (!opened) {   // app never opened → go to store
       if (isIOS) {
         window.location = iosAppStore;
       } else if (isAndroid) {
         window.location = androidWebStore;
       }
+    }
     
   }, 2000);
 }
   </script>
 </head>
-<body onload="openAppOrStore()">
-    <p>Opening the app... If it doesn't open, you'll be redirected to the store.</p>
+<body>
+  <p>Tap below to open the <b>miqube</b> app.</p>
+
+  <button onclick="openAppOrStore('home')">Open MiQube</button>
+  <br/><br/>
 </body>
 </html>
