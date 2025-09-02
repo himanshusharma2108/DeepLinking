@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="apple-itunes-app" content="app-id=1257705763">
   <title>Open My App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -25,39 +26,35 @@
       font-size: 16px;
       margin-bottom: 20px;
     }
-  </style> 
+  </style>
   <script>
     function openAppOrStore(path = "") {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  var appScheme = "miqube://" + path;
+  var iosAppStore = "https://apps.apple.com/app/id1257705763";
+  var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-      // Your custom scheme
-      var appScheme = "miqube://" + path;
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+  var isAndroid = /android/i.test(userAgent);
 
-      // Store links
-      var iosAppStore = "https://apps.apple.com/app/id1257705763";
-      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+  var opened = false;
 
-      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-      var isAndroid = /android/i.test(userAgent);
+  document.addEventListener("visibilitychange", function() {
+    if (document.hidden) opened = true;   // app took focus
+  });
 
-      var now = Date.now();
+  window.location = appScheme;
 
-      var iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
-
-      setTimeout(function () {
-        var elapsed = Date.now() - now;
-        if (elapsed < 1200) { 
-          if (isIOS) {
-            window.location = iosAppStore;
-          } else if (isAndroid) {
-            window.location = androidWebStore;
-          }
-        }
-      }, 1000);
+  setTimeout(function () {
+    if (!opened) {   // app never opened → go to store
+      if (isIOS) {
+        window.location = iosAppStore;
+      } else if (isAndroid) {
+        window.location = androidWebStore;
+      }
     }
+  }, 2000);
+}
   </script>
 </head>
 <body>
