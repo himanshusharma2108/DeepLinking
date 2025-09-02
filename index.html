@@ -28,30 +28,32 @@
   </style>
   <script>
     function openAppOrStore(path = "") {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  var appScheme = "miqube://" + path;
+  var iosAppStore = "https://apps.apple.com/app/id1257705763";
+  var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-      var appScheme = "miqube://" + path; // your deep link scheme
-      var iosAppStore = "https://apps.apple.com/app/id1257705763";
-      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+  var isAndroid = /android/i.test(userAgent);
 
-      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-      var isAndroid = /android/i.test(userAgent);
+  var opened = false;
 
-      var now = Date.now();
-      // Try opening app
-      window.location = appScheme;
+  document.addEventListener("visibilitychange", function() {
+    if (document.hidden) opened = true;   // app took focus
+  });
 
-      // If not installed → fallback after delay
-      setTimeout(function () {
-        if (Date.now() - now < 2000) { 
-          if (isIOS) {
-            window.location = iosAppStore;
-          } else if (isAndroid) {
-            window.location = androidWebStore;
-          }
-        }
-      }, 1500);
+  window.location = appScheme;
+
+  setTimeout(function () {
+    if (!opened) {   // app never opened → go to store
+      if (isIOS) {
+        window.location = iosAppStore;
+      } else if (isAndroid) {
+        window.location = androidWebStore;
+      }
     }
+  }, 2000);
+}
   </script>
 </head>
 <body>
