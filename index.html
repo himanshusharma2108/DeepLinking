@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open Miqube App</title>
+  <title>Open My App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -29,29 +29,35 @@
   <script>
     function openAppOrStore() {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+      // 🔑 Replace "myapp" with your actual app scheme
       var appScheme = "miqube://open";
+
+      // ✅ Replace with your real store links
       var iosAppStore = "https://apps.apple.com/app/id1257705763";
       var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
       var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
       var isAndroid = /android/i.test(userAgent);
 
-      var fallbackTriggered = false;
+      var appOpened = false;
 
-      // Cancel fallback if app opened (page goes hidden or unloaded)
-      function cancelFallback() {
-        fallbackTriggered = true;
+      // Detect if user left Safari/Chrome (app opened)
+      function markAppOpened() {
+        appOpened = true;
       }
-      document.addEventListener("visibilitychange", cancelFallback);
-      window.addEventListener("pagehide", cancelFallback);
-      window.addEventListener("blur", cancelFallback); // extra safety
+      document.addEventListener("visibilitychange", function() {
+        if (document.hidden) markAppOpened();
+      });
+      window.addEventListener("pagehide", markAppOpened);
+      window.addEventListener("blur", markAppOpened);
 
       // Try opening the app
       window.location = appScheme;
 
-      // Fallback only if app didn’t open
+      // Fallback only if app didn't open
       setTimeout(function () {
-        if (!fallbackTriggered) {
+        if (!appOpened) {
           if (isIOS) {
             window.location = iosAppStore;
           } else if (isAndroid) {
@@ -63,7 +69,13 @@
   </script>
 </head>
 <body>
-  <p>Tap below to open the Miqube app.</p>
-  <button onclick="openAppOrStore()">Open App</button>
+  <p>Tap below to open the <b>miqube</b> app.</p>
+
+  <!-- Example buttons for different pages in the app -->
+  <button onclick="openAppOrStore('home')">Open Home</button>
+  <br/><br/>
+  <button onclick="openAppOrStore('profile')">Open Profile</button>
+  <br/><br/>
+  <button onclick="openAppOrStore('settings')">Open Settings</button>
 </body>
 </html>
