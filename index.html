@@ -30,34 +30,20 @@
     function openAppOrStore(path = "") {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-      // 🔑 Replace "miqube" with your registered scheme
-      var appScheme = "miqube://" + path;
-
-      // ✅ Replace with your real store links
+      var appScheme = "miqube://" + path; // your deep link scheme
       var iosAppStore = "https://apps.apple.com/app/id1257705763";
       var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
       var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
       var isAndroid = /android/i.test(userAgent);
 
-      var appOpened = false;
+      var now = Date.now();
+      // Try opening app
+      window.location = appScheme;
 
-      function markAppOpened() { appOpened = true; }
-      document.addEventListener("visibilitychange", function() {
-        if (document.hidden) markAppOpened();
-      });
-      window.addEventListener("pagehide", markAppOpened);
-      window.addEventListener("blur", markAppOpened);
-
-      // ✅ Use iframe instead of window.location (avoids Safari error)
-      var iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
-
-      // ✅ Fallback if app isn't installed
+      // If not installed → fallback after delay
       setTimeout(function () {
-        if (!appOpened) {
+        if (Date.now() - now < 2000) { 
           if (isIOS) {
             window.location = iosAppStore;
           } else if (isAndroid) {
@@ -71,7 +57,6 @@
 <body>
   <p>Tap below to open the <b>miqube</b> app.</p>
 
-  <!-- Example buttons for different pages in the app -->
   <button onclick="openAppOrStore('home')">Open Home</button>
   <br/><br/>
   <button onclick="openAppOrStore('profile')">Open Profile</button>
