@@ -57,13 +57,7 @@
 }
   </script>
 </head>
-<body>
-  <p>Tap below to open the <b>miqube</b> app.</p>
-
-  <button onclick="openAppOrStore('home')">Open Home</button>
-  <br/><br/>
-  <button onclick="openAppOrStore('profile')">Open Profile</button>
-  <br/><br/>
-  <button onclick="openAppOrStore('settings')">Open Settings</button>
+<body onload="openAppOrStore()">
+    <p>Opening the app... If it doesn't open, you'll be redirected to the store.</p>
 </body>
 </html>
