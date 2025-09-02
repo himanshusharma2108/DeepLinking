@@ -25,7 +25,7 @@
       font-size: 16px;
       margin-bottom: 20px;
     }
-  </style>
+  </style> 
   <script>
     function openAppOrStore(path = "") {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -40,19 +40,16 @@
       var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
       var isAndroid = /android/i.test(userAgent);
 
-      // Time-based detection
       var now = Date.now();
 
-      // Try to open the app
       var iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.src = appScheme;
       document.body.appendChild(iframe);
 
-      // Fallback only if app not opened (user stayed on page > 1s)
       setTimeout(function () {
         var elapsed = Date.now() - now;
-        if (elapsed < 1200) { // still on page, app likely not installed
+        if (elapsed < 1200) { 
           if (isIOS) {
             window.location = iosAppStore;
           } else if (isAndroid) {
