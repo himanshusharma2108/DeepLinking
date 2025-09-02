@@ -28,32 +28,39 @@
   </style>
   <script>
     function openAppOrStore(path = "") {
-  var appScheme = "miqube://" + path;
-  var iosAppStore = "https://apps.apple.com/app/id1257705763";
-  var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-  var isAndroid = /android/i.test(userAgent);
+      // Your custom scheme
+      var appScheme = "miqube://" + path;
 
-  var opened = false;
+      // Store links
+      var iosAppStore = "https://apps.apple.com/app/id1257705763";
+      var androidWebStore = "https://play.google.com/store/apps/details?id=com.indiqube.miqube";
 
-  document.addEventListener("visibilitychange", function() {
-    if (document.hidden) opened = true;   // app took focus
-  });
+      var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      var isAndroid = /android/i.test(userAgent);
 
-  window.location = appScheme;
+      // Time-based detection
+      var now = Date.now();
 
-  setTimeout(function () {
-    if (!opened) {   // app never opened → go to store
-      if (isIOS) {
-        window.location = iosAppStore;
-      } else if (isAndroid) {
-        window.location = androidWebStore;
-      }
+      // Try to open the app
+      var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appScheme;
+      document.body.appendChild(iframe);
+
+      // Fallback only if app not opened (user stayed on page > 1s)
+      setTimeout(function () {
+        var elapsed = Date.now() - now;
+        if (elapsed < 1200) { // still on page, app likely not installed
+          if (isIOS) {
+            window.location = iosAppStore;
+          } else if (isAndroid) {
+            window.location = androidWebStore;
+          }
+        }
+      }, 1000);
     }
-  }, 2000);
-}
   </script>
 </head>
 <body>
