@@ -27,11 +27,11 @@
     }
   </style>
   <script>
-    function openAppOrStore() {
+    function openAppOrStore(path = "") {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-      // 🔑 Replace "myapp" with your actual app scheme
-      var appScheme = "miqube://open";
+      // 🔑 Replace "miqube" with your registered scheme
+      var appScheme = "miqube://" + path;
 
       // ✅ Replace with your real store links
       var iosAppStore = "https://apps.apple.com/app/id1257705763";
@@ -42,20 +42,20 @@
 
       var appOpened = false;
 
-      // Detect if user left Safari/Chrome (app opened)
-      function markAppOpened() {
-        appOpened = true;
-      }
+      function markAppOpened() { appOpened = true; }
       document.addEventListener("visibilitychange", function() {
         if (document.hidden) markAppOpened();
       });
       window.addEventListener("pagehide", markAppOpened);
       window.addEventListener("blur", markAppOpened);
 
-      // Try opening the app
-      window.location = appScheme;
+      // ✅ Use iframe instead of window.location (avoids Safari error)
+      var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appScheme;
+      document.body.appendChild(iframe);
 
-      // Fallback only if app didn't open
+      // ✅ Fallback if app isn't installed
       setTimeout(function () {
         if (!appOpened) {
           if (isIOS) {
