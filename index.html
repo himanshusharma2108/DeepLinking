@@ -46,13 +46,13 @@
   window.location = appScheme;
 
   setTimeout(function () {
-    if (!opened) {   // app never opened → go to store
+      // app never opened → go to store
       if (isIOS) {
         window.location = iosAppStore;
       } else if (isAndroid) {
         window.location = androidWebStore;
       }
-    }
+    
   }, 2000);
 }
   </script>
